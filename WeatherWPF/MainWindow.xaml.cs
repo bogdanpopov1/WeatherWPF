@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
+using Microsoft.Win32;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
@@ -311,6 +313,44 @@ namespace WeatherWPF
                 itemRise = _listView[i - 1];
             }
             TempRise_TB.Text = string.Join("", tempRise);
+        }
+
+        private void SaveAsTXTBtn_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Текстовые файлы (*.txt)|*.txt|Все файлы (*.*)|*.*";
+            saveFileDialog.DefaultExt = ".txt";
+            saveFileDialog.FileName = "weather";
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                string filePath = saveFileDialog.FileName;
+
+                using (StreamWriter writer = new StreamWriter(filePath))
+                {
+                    writer.WriteLine($"{"Дата".PadRight(25)}{"Температура, ℃".PadRight(18)}{"Облачность".PadRight(17)}{"Ветер, м/с".PadRight(15)}{"Осадки, мм".PadRight(15)}");
+
+                    foreach (var item in LstView.Items)
+                    {
+                        Weather data = item as Weather;
+                        if (data != null)
+                        {
+                            writer.WriteLine($"{data.Date.ToString().PadRight(25)}{data.Temp.ToString().PadRight(18)}{data.Status.Name.PadRight(17)}{data.WindSpeed.ToString().PadRight(15)}{data.RainAmount.ToString().PadRight(15)}");
+                        }
+                    }
+
+                    writer.WriteLine("\n\nПОКАЗАТЕЛИ");
+                    writer.WriteLine("\nСредняя температура: " + MediumTemp_TB.Text);
+                    writer.WriteLine("\nМаксимальная температура: " + MaxTemp_TB.Text);
+                    writer.WriteLine("Дни максимальной температуры: " + MaxTempDays_TB.Text);
+                    writer.WriteLine("\nМинимальная температура: " + MinTemp_TB.Text);
+                    writer.WriteLine("Дни минимальной температуры: " + MinTempDays_TB.Text);
+                    writer.WriteLine("\nАномальные спады температуры: " + TempDrop_TB.Text);
+                    writer.WriteLine("Аномальные подъемы температуры: " + TempRise_TB.Text);
+                }
+
+                MessageBox.Show("Данные успешно сохранены!");
+            }
         }
     }
 }
