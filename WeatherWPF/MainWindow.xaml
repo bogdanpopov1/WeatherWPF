@@ -204,6 +204,17 @@
                 </Button>
             </StackPanel>
 
+            <StackPanel>
+                <Button x:Name="ClearAllBtn" Content="Стереть все данные о погоде" Padding="0,6,0,6" Click="ClearAllBtn_Click" Margin="0,6,0,0" >
+                    <Button.BorderBrush>
+                        <SolidColorBrush Color="#FF3C4AFF" Opacity="0.5"/>
+                    </Button.BorderBrush>
+                    <Button.Background>
+                        <SolidColorBrush Color="#FFDDDDDD" Opacity="0.5"/>
+                    </Button.Background>
+                </Button>
+            </StackPanel>
+
             <StackPanel Orientation="Horizontal" Width="340" Margin="0,20,0,405" Grid.RowSpan="2" >
                 <StackPanel Width="196" >
                     <StackPanel Orientation="Horizontal">
@@ -229,7 +240,7 @@
         </StackPanel>
 
 
-        <StackPanel Grid.Column="1" Grid.Row="1"  Margin="20,0,0,0">
+        <StackPanel Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center">
             <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
                 <Button x:Name="AddBtn" Content="Добавить" Padding="30,0,30,0" Background="#FF0081FF" Foreground="White" FontWeight="Bold" Cursor="Hand" BorderBrush="{x:Null}" Click="AddBtn_Click" />
                 <Button x:Name="EditBtn" Background="{x:Null}" BorderBrush="{x:Null}" Padding="0,0,0,0" Width="28" Content="📝" Click="EditBtn_Click" FontSize="20" Cursor="Hand" Margin="180,0,10,0" />

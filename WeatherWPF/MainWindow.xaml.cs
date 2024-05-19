@@ -73,8 +73,6 @@ namespace WeatherWPF
             CalculteStates();
         }
 
-
-
         private void LstView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             _selectedItem = (Weather)LstView.SelectedItem;
@@ -205,7 +203,7 @@ namespace WeatherWPF
 
         private void SortResetBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (_listViewFilter == null) 
+            if (_listViewFilter == null)
                 _listView = Data.DataContext.Weathers;
             else
                 _listView = _listViewFilter;
@@ -243,8 +241,18 @@ namespace WeatherWPF
             if (_listViewFilter != null)
                 _listView = _listViewFilter;
 
-            if (_listView == null)
+            if (_listView == null || _listView.Count == 0)
+            {
+                MediumTemp_TB.Text = "";
+                MaxTemp_TB.Text = "";
+                MaxTempDays_TB.Text = "";
+                MinTemp_TB.Text = "";
+                MinTempDays_TB.Text = "";
+                TempDrop_TB.Text = "";
+                TempRise_TB.Text = "";
                 return;
+            }
+                
 
             MediumTemp_TB.Text = Math.Round(_listView.Average(x => x.Temp)).ToString() + " ℃";
 
@@ -317,6 +325,12 @@ namespace WeatherWPF
 
         private void SaveAsTXTBtn_Click(object sender, RoutedEventArgs e)
         {
+            if (_listView.Count == 0)
+            {
+                MessageBox.Show("Нет данных о погоде!", "Информирование", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "Текстовые файлы (*.txt)|*.txt|Все файлы (*.*)|*.*";
             saveFileDialog.DefaultExt = ".txt";
@@ -345,12 +359,34 @@ namespace WeatherWPF
                     writer.WriteLine("Дни максимальной температуры: " + MaxTempDays_TB.Text);
                     writer.WriteLine("\nМинимальная температура: " + MinTemp_TB.Text);
                     writer.WriteLine("Дни минимальной температуры: " + MinTempDays_TB.Text);
-                    writer.WriteLine("\nАномальные спады температуры: " + TempDrop_TB.Text);
-                    writer.WriteLine("Аномальные подъемы температуры: " + TempRise_TB.Text);
+                    writer.WriteLine("\nАномальные спады температуры:\n" + TempDrop_TB.Text);
+                    writer.WriteLine("Аномальные подъемы температуры:\n" + TempRise_TB.Text);
                 }
 
-                MessageBox.Show("Данные успешно сохранены!");
+                MessageBox.Show("Данные успешно сохранены!", "Информирование", MessageBoxButton.OK, MessageBoxImage.Asterisk);
             }
+        }
+
+        private void ClearAllBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (_listView.Count == 0)
+            {
+                MessageBox.Show("Нет данных о погоде!", "Информирование", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            if (MessageBox.Show("Внимание! Это действие необратимо!\nВы действительно хотите удалить все данные о погоде?",
+                    "Удаление информации",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Exclamation) == MessageBoxResult.Yes)
+            {
+                Data.DataContext.Weathers.Clear();
+                _listView = Data.DataContext.Weathers;
+            }
+            LstView.ItemsSource = _listView;
+            LstView.Items.Refresh();
+            CancelBtn_Click(sender, e);
+            CalculteStates();
         }
     }
 }
